@@ -13,9 +13,47 @@
   <dd><%= @sub_category.name %></dd>
 
   <dt>Image:</dt>
-  <dd><%= @sub_category.image %></dd>
+  <dd><%= image_tag @sub_category.image.url, class: 'small-image' %></dd>
 
   <dt>Category:</dt>
-  <dd><%= @sub_category.category %></dd>
+  <dd><%= @sub_category.category_title %></dd>
 
 </dl>
+
+<p>All items of <%= @sub_category.name %></p>
+<div class="table-responsive">
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+    
+        <th>Name</th>
+    
+
+            <th>Description</th>
+            <th>Score</th>
+            <th>Item image</th>
+            <th>Sub category</th>
+            <th>User</th>
+            
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @sub_category.items.each do |item| %>
+        <%= content_tag :tr, id: dom_id(item), class: dom_class(item) do %>
+          
+            <td><%= link_to item.name, item %></td>
+          
+
+                      <td><%= item.description %></td>
+                      <td><%= item.score %></td>
+                      <td><%= image_tag item.item_image.url, class: 'small-image' %></td>
+                      <td><%= item.sub_category_name %></td>
+                      <td><%= item.user_name %></td>
+          
+          
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

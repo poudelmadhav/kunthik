@@ -1,5 +1,7 @@
 class SubCategoriesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_sub_category, only: [:show, :edit, :update, :destroy]
+  before_action :is_admin?, except: [:index, :show]
 
   # GET /sub_categories
   # GET /sub_categories.json
