@@ -1,0 +1,21 @@
+<div class="page-header">
+  <%= link_to sub_categories_path, class: 'btn btn-default' do %>
+    All Sub_categories
+  <% end %>
+  <%= link_to edit_sub_category_path(@sub_category), class: 'btn btn-primary' do %>
+    Edit
+  <% end %>
+  <h1>Show sub_category</h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt>Name:</dt>
+  <dd><%= @sub_category.name %></dd>
+
+  <dt>Image:</dt>
+  <dd><%= @sub_category.image %></dd>
+
+  <dt>Category:</dt>
+  <dd><%= @sub_category.category %></dd>
+
+</dl>
