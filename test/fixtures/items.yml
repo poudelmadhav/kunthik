@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: 
+  description: 
+  score: 
+  item_image: 
+  sub_category: 
+  user: one
+
+two:
+  name: 
+  description: 
+  score: 
+  item_image: 
+  sub_category: 
+  user: two

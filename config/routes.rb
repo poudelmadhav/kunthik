@@ -1,6 +1,7 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  resources :items
   resources :sub_categories
   resources :categories
   namespace :admin do
