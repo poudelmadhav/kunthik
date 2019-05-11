@@ -1,14 +1,35 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Title:</strong>
-  <%= @category.title %>
-</p>
-
-<p>
-  <strong>Image:</strong>
+  <strong><%= @category.title %></strong><br>
   <%= image_tag @category.image.url, class: 'small-image' %>
 </p>
+
+<!-- sub categories -->
+<h2>Sub Categories of <%= @category.title %></h2>
+<div class="table-responsive">
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Image</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @category.sub_categories.each do |sub_category| %>
+        <tr>
+          <td><%= sub_category.name %></td>
+          <td><%= image_tag sub_category.image.url, class: 'small-image' %></td>  
+          <td><%= link_to 'Show', sub_category %></td>
+          <td><%= link_to 'Edit', edit_sub_category_path(sub_category) %></td>
+          <td><%= link_to 'Destroy', sub_category, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
 <%= link_to 'Edit', edit_category_path(@category) %> |
 <%= link_to 'Back', categories_path %>
