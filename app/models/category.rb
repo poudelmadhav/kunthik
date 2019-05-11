@@ -1,5 +1,5 @@
 class Category < ApplicationRecord
-  validates :name, presence: true
+  validates :title, :image, presence: true
 
   has_many :sub_categories
   mount_uploader :image, CategoryImageUploader
