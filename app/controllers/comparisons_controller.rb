@@ -6,12 +6,13 @@ class ComparisonsController < ApplicationController
     # binding.pry
     if @comparison.item1.present?
       Item.find(@comparison.item1).update_score
+      redirect_to item_path(@comparison.item1), notice: 'Item rated successfully.'
     elsif @comparison.item2.present?
       Item.find(@comparison.item2).update_score
+      redirect_to item_path(@comparison.item2), notice: 'Item rated successfully.'
     else
-      redirect_to root_path
+      redirect_to root_path, notice: 'Error.'
     end
-    redirect_to root_path
   end
 
   private

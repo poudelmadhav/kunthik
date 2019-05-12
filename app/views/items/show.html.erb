@@ -18,7 +18,13 @@
       <dd><%= @item.description %></dd>
 
       <dt>Score:</dt>
-      <dd><%= @item.score %></dd>
+      <dd>
+        <% if @item.score %>
+          <%= @item.score %>
+        <% else %>
+        0
+        <% end %>
+      </dd>
 
       <dt>Item image:</dt>
       <dd><%= image_tag @item.item_image.url, class: 'small-image' %></dd>
@@ -40,7 +46,7 @@
           <% end %>
       <% end %>
     </select>
-    <h1><a href="/compares?item1=<%=@item.id%>&item2=" class="selected_item btn btn-primary" role="button">Select an Item to compare</a></h1>
+    <h1><a href="/compares?item1=<%=@item.id%>&item2=" class="selected_item btn btn-primary" role="button">Compare</a></h1>
     <div id="details"></div>
   </div>
 </div>

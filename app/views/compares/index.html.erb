@@ -1,11 +1,13 @@
 <h1>Comparison</h1>
 <div class="row">
+  
+
   <div class="col-sm-6">
     <h2><%= @item1.name %></h2>
     <%= image_tag @item1.item_image.url, class: 'middle-image' %><br>
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#item1">
-      Item 1
+      Yo thik!
     </button>
 
 <!-- Modal -->
@@ -30,14 +32,15 @@
         <%= f.submit 'Save Changes', class: 'btn btn-primary' %>
         <% end %>
     </div>
-  </div>
+  </div></div>
 </div>
 </div>
+
   <div class="col-sm-6">
     <h2><%= @item2.name %></h2>
     <%= image_tag @item2.item_image.url, class: 'middle-image' %><br>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#item2">
-      Item2
+      Yo thik!
     </button>
 
       <!-- Modal -->
@@ -52,7 +55,7 @@
             </div>
             <div class="modal-body">
               Why do you like <%= @item2.name %>?
-                <%= simple_form_for Comparison.new do |f| %>
+                  <%= simple_form_for Comparison.new do |f| %>
                   <%= f.input :reason %>
                   <%= f.hidden_field :item2, value: @item2.id %>
             </div>
@@ -65,4 +68,5 @@
         </div>
     </div>
   </div>
+
 </div>
