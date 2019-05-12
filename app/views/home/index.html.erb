@@ -4,3 +4,14 @@
 <%= link_to "Categories", categories_path, class: 'btn btn-primary' %>
 <%= link_to "Sub Categories", sub_categories_path, class: 'btn btn-primary' %>
 <%= link_to "All Items", items_path, class: 'btn btn-primary' %>
+
+<br><br><br>
+<h4>All Items</h4><br>
+<div class="row">
+  <% @items.each do |item| %>
+    <div class="col-sm-3">
+      <h5><%= link_to item.name, item_path(item) %></h5>
+      <%= image_tag item.item_image.url, class: 'small-image' %>
+    </div>
+  <% end %>
+</div>
