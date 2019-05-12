@@ -1,4 +1,11 @@
 .small-image {
   height: 100px;
   width: 100px;
+  object-fit: cover;
+}
+
+.middle-image {
+  height: 400px;
+  width: 400px;
+  object-fit: cover;
 }

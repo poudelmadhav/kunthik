@@ -1,30 +1,57 @@
-<div class="page-header">
-  <%= link_to items_path, class: 'btn btn-default' do %>
-    All Items
-  <% end %>
-  <%= link_to edit_item_path(@item), class: 'btn btn-primary' do %>
-    Edit
-  <% end %>
-  <h1>Show item</h1>
+<div class="row">
+  <div class="col-sm-6">
+    <div class="page-header">
+      <%= link_to items_path, class: 'btn btn-default' do %>
+        All Items
+      <% end %>
+      <%= link_to edit_item_path(@item), class: 'btn btn-primary' do %>
+        Edit
+      <% end %>
+      <h1>Show item</h1>
+    </div>
+
+    <dl class="dl-horizontal">
+      <dt>Name:</dt>
+      <dd><%= @item.name %></dd>
+
+      <dt>Description:</dt>
+      <dd><%= @item.description %></dd>
+
+      <dt>Score:</dt>
+      <dd><%= @item.score %></dd>
+
+      <dt>Item image:</dt>
+      <dd><%= image_tag @item.item_image.url, class: 'small-image' %></dd>
+
+      <dt>Sub category:</dt>
+      <dd><%= @item.sub_category_name %></dd>
+
+      <dt>User:</dt>
+      <dd><%= @item.user_name %></dd>
+
+    </dl>
+  </div>
+  <div class="col-sm-6 form-group">
+    <select class="form-control" id="item-selection" onchange="changeItem();">
+      <option selected>Please select a item</option>
+      <% @items.each do |item| %>
+          <% if @item.id != item.id && @item.sub_category_id == item.sub_category_id %>
+            <option value="<%= item.id %>"><%= item.name %></option>
+          <% end %>
+      <% end %>
+    </select>
+    <h1><a href="/compares?item1=<%=@item.id%>&item2=" class="selected_item btn btn-primary" role="button">Select an Item to compare</a></h1>
+    <div id="details"></div>
+  </div>
 </div>
-
-<dl class="dl-horizontal">
-  <dt>Name:</dt>
-  <dd><%= @item.name %></dd>
-
-  <dt>Description:</dt>
-  <dd><%= @item.description %></dd>
-
-  <dt>Score:</dt>
-  <dd><%= @item.score %></dd>
-
-  <dt>Item image:</dt>
-  <dd><%= image_tag @item.item_image.url, class: 'small-image' %></dd>
-
-  <dt>Sub category:</dt>
-  <dd><%= @item.sub_category_name %></dd>
-
-  <dt>User:</dt>
-  <dd><%= @item.user_name %></dd>
-
-</dl>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+<script>
+  function changeItem() {
+    var item2 = $('#item-selection').children("option:selected").val();
+    var url = "/compares?item1=<%=@item.id%>&item2=" + item2;
+    document.querySelector(".selected_item").href = url;
+  }
+</script>
