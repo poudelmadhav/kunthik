@@ -25,4 +25,6 @@ Rails.application.routes.draw do
   root to: 'home#index'
   get '/compares', to: 'compares#index'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
+  resource :comparisons, only: [:create]
 end

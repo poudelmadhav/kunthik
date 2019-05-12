@@ -9,22 +9,26 @@
     </button>
 
 <!-- Modal -->
-<div class="modal fade" id="item1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="item1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel"><%= @item1.name %></h5>
+        <h5 class="modal-title" id="exampleModalLabel1"><%= @item1.name %></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        I love this product.
+        Why do you like <%= @item1.name %>?
+        <%= simple_form_for Comparison.new do |f| %>
+          <%= f.input :reason %>
+          <%= f.hidden_field :item1, value: @item1.id %>
+        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+        <%= f.submit 'Save Changes', class: 'btn btn-primary' %>
+        <% end %>
     </div>
   </div>
 </div>
@@ -32,26 +36,30 @@
   <div class="col-sm-6">
     <h2><%= @item2.name %></h2>
     <%= image_tag @item2.item_image.url, class: 'middle-image' %><br>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#item1">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#item2">
       Item2
     </button>
 
       <!-- Modal -->
-      <div class="modal fade" id="item1" tabindex="-1" role="dialog" aria-labelledby="item2" aria-hidden="true">
+      <div class="modal fade" id="item2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="item2"><%= @item2.name %></h5>
+              <h5 class="modal-title" id="exampleModalLabel2"><%= @item2.name %></h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
-              I love this product.
+              Why do you like <%= @item2.name %>?
+                <%= simple_form_for Comparison.new do |f| %>
+                  <%= f.input :reason %>
+                  <%= f.hidden_field :item2, value: @item2.id %>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+                <%= f.submit 'Save Changes', class: 'btn btn-primary' %>
+              <% end %>
             </div>
           </div>
         </div>
