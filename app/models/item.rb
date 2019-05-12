@@ -16,4 +16,9 @@ class Item < ApplicationRecord
       find(:all)
     end
   end
+
+  def update_score
+    score_to_update = score + 1
+    update_attribute(:score,score_to_update)
+  end
 end
