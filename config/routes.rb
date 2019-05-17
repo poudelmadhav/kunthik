@@ -9,6 +9,9 @@ Rails.application.routes.draw do
       resources :announcements
       resources :notifications
       resources :services
+      resources :categories
+      resources :sub_categories
+      resources :items
 
       root to: "users#index"
     end
