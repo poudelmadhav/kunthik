@@ -1,24 +1,9 @@
-# README
+# Kunthik
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A project to compare and give review between different products.
 
-Things you may want to cover:
+This is live at:
+https://kunthik.paudelmadhav.com.np
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Docker Setup
+For Docker setup instructions, see [DOCKER.md](DOCKER.md).
