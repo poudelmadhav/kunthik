@@ -82,3 +82,4 @@ gem 'webpacker', '~> 4.0.1'
 gem "figaro"
 gem 'carrierwave'
 gem 'simple_form'
+gem 'cloudinary', '~> 1.14'
