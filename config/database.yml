@@ -24,6 +24,10 @@ default: &default
 development:
   <<: *default
   database: kunthik_development
+  host: <%= ENV['DB_HOST'] || ENV['DATABASE_HOST'] || ENV['POSTGRES_HOST'] || 'localhost' %>
+  username: <%= ENV['DB_USER'] || ENV['POSTGRES_USER'] || 'postgres' %>
+  password: <%= ENV['DB_PASSWORD'] || ENV['POSTGRES_PASSWORD'] || nil %>
+  port: <%= ENV['DB_PORT'] || ENV['POSTGRES_PORT'] || 5432 %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -58,6 +62,10 @@ development:
 test:
   <<: *default
   database: kunthik_test
+  host: <%= ENV['DB_HOST'] || ENV['DATABASE_HOST'] || ENV['POSTGRES_HOST'] || 'localhost' %>
+  username: <%= ENV['DB_USER'] || ENV['POSTGRES_USER'] || 'postgres' %>
+  password: <%= ENV['DB_PASSWORD'] || ENV['POSTGRES_PASSWORD'] || nil %>
+  port: <%= ENV['DB_PORT'] || ENV['POSTGRES_PORT'] || 5432 %>
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is

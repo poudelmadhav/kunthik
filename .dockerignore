@@ -35,3 +35,31 @@
 /app/assets/builds/*
 !/app/assets/builds/.keep
 /public/assets
+
+# Bash history (IMPORTANT: prevent bash history from being in image)
+.bash_history
+**/.bash_history
+**/bash_history
+
+# IDE
+.vscode
+.idea
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation
+README.md
+*.md
+!DOCKER.md
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Test coverage
+coverage/

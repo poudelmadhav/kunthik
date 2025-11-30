@@ -1,0 +1,169 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:11-alpine
+    container_name: kunthik_db_dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./tmp/db:/tmp/db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: kunthik_development
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kunthik_network
+
+  redis:
+    image: redis:5-alpine
+    container_name: kunthik_redis_dev
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kunthik_network
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
+        RUBY_VERSION: 2.4.3
+        NODE_VERSION: 10.24.1
+        YARN_VERSION: 1.22.21
+    container_name: kunthik_web_dev
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0"
+    volumes:
+      # Mount source code with proper permissions
+      - .:/rails:cached
+      # Preserve bash history
+      - bash_history:/home/rails/.bash_history_volume
+      # Don't mount these directories to avoid conflicts
+      - bundle_cache:/usr/local/bundle
+      - node_modules:/rails/node_modules
+      - rails_cache:/rails/tmp/cache
+      - /rails/log
+      - /rails/tmp
+    environment:
+      RAILS_ENV: development
+      RACK_ENV: development
+      NODE_ENV: development
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_PORT: 5432
+      REDIS_URL: redis://redis:6379/1
+      RAILS_MAX_THREADS: 5
+      WEB_CONCURRENCY: 1
+      WEBPACKER_DEV_SERVER_HOST: webpacker
+      RAILS_LOG_TO_STDOUT: "true"
+      # Disable Spring in Docker
+      DISABLE_SPRING: 1
+      # Preserve bash history
+      HISTFILE: /home/rails/.bash_history_volume/.bash_history
+      HISTSIZE: 10000
+      HISTFILESIZE: 10000
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    entrypoint: ["/rails/bin/docker-entrypoint"]
+    stdin_open: true
+    tty: true
+    networks:
+      - kunthik_network
+
+  webpacker:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
+        RUBY_VERSION: 2.4.3
+        NODE_VERSION: 10.24.1
+        YARN_VERSION: 1.22.21
+    container_name: kunthik_webpacker_dev
+    command: ./bin/webpack-dev-server
+    volumes:
+      - .:/rails:cached
+      - bundle_cache:/usr/local/bundle
+      - node_modules:/rails/node_modules
+    environment:
+      RAILS_ENV: development
+      NODE_ENV: development
+      WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
+    ports:
+      - "3035:3035"
+    networks:
+      - kunthik_network
+
+  sidekiq:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
+        RUBY_VERSION: 2.4.3
+        NODE_VERSION: 10.24.1
+        YARN_VERSION: 1.22.21
+    container_name: kunthik_sidekiq_dev
+    command: bundle exec sidekiq
+    volumes:
+      - .:/rails:cached
+      - bundle_cache:/usr/local/bundle
+      - node_modules:/rails/node_modules
+    environment:
+      RAILS_ENV: development
+      RACK_ENV: development
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_PORT: 5432
+      REDIS_URL: redis://redis:6379/1
+      RAILS_LOG_TO_STDOUT: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - kunthik_network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  bundle_cache:
+    driver: local
+  node_modules:
+    driver: local
+  rails_cache:
+    driver: local
+  bash_history:
+    driver: local
+
+networks:
+  kunthik_network:
+    driver: bridge

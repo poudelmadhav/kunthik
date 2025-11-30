@@ -1,0 +1,104 @@
+# syntax = docker/dockerfile:1
+
+# Development Dockerfile for kunthik
+# Matches production Ruby 2.4.3 and Node 10.24.1 versions
+
+ARG RUBY_VERSION=2.4.3
+FROM ruby:${RUBY_VERSION}-slim
+
+# Accept build arguments for user/group IDs
+ARG USER_ID=1000
+ARG GROUP_ID=1000
+ARG NODE_VERSION=10.24.1
+ARG YARN_VERSION=1.22.21
+
+# Rails app lives here
+WORKDIR /rails
+
+# Set development environment
+ENV RAILS_ENV=development \
+    RACK_ENV=development \
+    NODE_ENV=development \
+    BUNDLE_PATH=/usr/local/bundle \
+    LANG=en_US.UTF-8 \
+    PATH=/usr/local/node/bin:$PATH
+
+# Use archive.debian.org for Stretch and disable expired checks
+RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list && \
+    echo "deb http://archive.debian.org/debian-security stretch/updates main" >> /etc/apt/sources.list && \
+    echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
+
+# Install dependencies
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y --allow-unauthenticated \
+      build-essential \
+      curl \
+      git \
+      libpq-dev \
+      libvips \
+      pkg-config \
+      python \
+      postgresql-client \
+      vim \
+      nano \
+      less \
+      && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js and Yarn (matching production versions)
+# Detect architecture and download appropriate Node.js binary
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then \
+      NODE_ARCH="arm64"; \
+    else \
+      NODE_ARCH="x64"; \
+    fi && \
+    curl -sL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${NODE_ARCH}.tar.xz | tar -xJ -C /tmp/ && \
+    mv /tmp/node-v${NODE_VERSION}-linux-${NODE_ARCH} /usr/local/node && \
+    /usr/local/node/bin/npm install -g yarn@${YARN_VERSION} && \
+    rm -rf /tmp/node-v*
+
+# Create user with matching host UID/GID for proper permissions
+RUN set -ex && \
+    (groupadd -g ${GROUP_ID} rails 2>/dev/null || groupmod -n rails $(getent group ${GROUP_ID} | cut -d: -f1) 2>/dev/null || true) && \
+    (useradd -u ${USER_ID} -g ${GROUP_ID} -m -s /bin/bash rails 2>/dev/null || usermod -u ${USER_ID} -g ${GROUP_ID} rails 2>/dev/null || true) && \
+    mkdir -p /usr/local/bundle /usr/local/bundle/cache /usr/local/bundle/cache/bundler/git && \
+    chown -R ${USER_ID}:${GROUP_ID} /usr/local/bundle && \
+    chmod -R 755 /usr/local/bundle && \
+    mkdir -p /rails && \
+    chown -R ${USER_ID}:${GROUP_ID} /rails && \
+    mkdir -p /home/rails/.bash_history_volume && \
+    chown -R ${USER_ID}:${GROUP_ID} /home/rails/.bash_history_volume
+
+# Install bundler before switching to rails user and fix ownership afterwards
+RUN gem install bundler:1.17.3 && \
+    chown -R ${USER_ID}:${GROUP_ID} /usr/local/bundle
+
+# Ensure GEM_HOME aligns with bundle path for user installs
+ENV GEM_HOME=/usr/local/bundle
+
+USER rails:rails
+
+# Copy dependency files
+COPY --chown=rails:rails Gemfile Gemfile.lock ./
+
+# Install Ruby dependencies
+RUN bundle install
+
+# Copy package files
+COPY --chown=rails:rails package.json yarn.lock ./
+
+# Install JavaScript dependencies
+RUN yarn install --frozen-lockfile
+
+# Copy application code
+COPY --chown=rails:rails . .
+
+# Create necessary directories
+RUN mkdir -p tmp/pids tmp/cache tmp/sockets log public/uploads && \
+    chmod -R 755 tmp log public/uploads
+
+# Expose port 3000
+EXPOSE 3000
+
+# Start Rails server by default
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
