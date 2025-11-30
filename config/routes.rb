@@ -17,10 +17,10 @@ Rails.application.routes.draw do
     end
   get '/privacy', to: 'home#privacy'
   get '/terms', to: 'home#terms'
-    authenticate :user, lambda { |u| u.admin? } do
-      mount Sidekiq::Web => '/sidekiq'
-    end
-
+  
+  authenticate :user, lambda { |u| u.admin? } do
+    mount Sidekiq::Web => '/sidekiq'
+  end
 
   resources :notifications, only: [:index]
   resources :announcements, only: [:index]

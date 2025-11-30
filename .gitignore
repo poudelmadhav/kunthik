@@ -36,3 +36,12 @@ yarn-debug.log*
 # Ignore application configuration
 /config/application.yml
 /config/database.yml
+
+# Docker development environment files
+.env.dev
+docker-compose.override.yml
+
+# Docker bash history (do not commit)
+.bash_history
+**/.bash_history
+**/bash_history
